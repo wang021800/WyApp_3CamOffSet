@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <DetectionSpec xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <PixelResolutionRow>0.01</PixelResolutionRow>
-  <PixelResolutionColum>0.01</PixelResolutionColum>
+  <PixelResolutionRow>1</PixelResolutionRow>
+  <PixelResolutionColum>1</PixelResolutionColum>
   <RowBase>
-    <double>2498.4855776038571</double>
+    <double>2501.6650404668667</double>
   </RowBase>
   <ColumBase>
-    <double>1352.6520351099009</double>
+    <double>1294.492234608033</double>
   </ColumBase>
   <Row1>
     <double>3113.3519924098673</double>
@@ -94,7 +94,7 @@
     <double>0</double>
   </adjust>
   <ThresholdLow>
-    <double>15</double>
+    <double>100</double>
     <double>15</double>
     <double>0</double>
     <double>0</double>
@@ -104,7 +104,7 @@
     <double>0</double>
   </ThresholdLow>
   <ThresholdHigh>
-    <double>30</double>
+    <double>200</double>
     <double>35</double>
     <double>0</double>
     <double>0</double>
@@ -114,7 +114,7 @@
     <double>0</double>
   </ThresholdHigh>
   <AreaLow>
-    <double>10000</double>
+    <double>1</double>
     <double>10000</double>
     <double>0</double>
     <double>0</double>

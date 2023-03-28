@@ -100,15 +100,15 @@ namespace WY_App
             chk_ClientEnabled.Checked = Parameters.commministion.TcpClientEnable;
             num_LogSaveDays.Value = Parameters.commministion.LogFileExistDay;
 
-            txt_Trigger_Detection.Text = Parameters.plcParams.Trigger_Detection;
+            
             txt_HeartBeat_Add.Text = Parameters.plcParams.HeartBeatAdd;
             txt_StartAdd.Text = Parameters.plcParams.StartAdd;
-            txt_Completion_Add.Text = Parameters.plcParams.Completion;
-
-            uiCheckBox3.Checked = Parameters.cameraParam.CamContinuesMode;
-            uiRadioButton5.Checked = !Parameters.cameraParam.CamContinuesMode;
-            uiRadioButton6.Checked = Parameters.cameraParam.CamContinuesMode;
-            
+            txt_Trigger_Detection0.Text = Parameters.plcParams.Trigger_Detection0;
+            txt_Completion_Add0.Text = Parameters.plcParams.Completion0;
+            txt_Trigger_Detection1.Text = Parameters.plcParams.Trigger_Detection1;
+            txt_Completion_Add1.Text = Parameters.plcParams.Completion1;
+            txt_Trigger_Detection2.Text = Parameters.plcParams.Trigger_Detection2;
+            txt_Completion_Add2.Text = Parameters.plcParams.Completion2;
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
@@ -132,10 +132,10 @@ namespace WY_App
             num_ClientPort.Enabled = true;
             chk_ClientEnabled.Enabled = true;
 
-            txt_Trigger_Detection.Enabled = true;
+            txt_Trigger_Detection0.Enabled = true;
             txt_HeartBeat_Add.Enabled = true;
             txt_StartAdd.Enabled = true;
-            txt_Completion_Add.Enabled = true;
+            txt_Completion_Add0.Enabled = true;
             num_LogSaveDays.Enabled = true;
 
             txt_ImageSavePath.Enabled = true;
@@ -160,16 +160,16 @@ namespace WY_App
             Parameters.commministion.TcpClientEnable = chk_ClientEnabled.Checked;
             Parameters.commministion.LogFileExistDay = (int)num_LogSaveDays.Value;
 
-
-
-
-
             XMLHelper.serialize<Parameters.Commministion>(Parameters.commministion, "Parameter/Commministion.xml");
 
-            Parameters.plcParams.Trigger_Detection = txt_Trigger_Detection.Text;
             Parameters.plcParams.HeartBeatAdd = txt_HeartBeat_Add.Text;
             Parameters.plcParams.StartAdd = txt_StartAdd.Text;
-            Parameters.plcParams.Completion = txt_Completion_Add.Text;
+            Parameters.plcParams.Trigger_Detection0 = txt_Trigger_Detection0.Text;
+            Parameters.plcParams.Completion0 = txt_Completion_Add0.Text;
+            Parameters.plcParams.Trigger_Detection1 = txt_Trigger_Detection1.Text;
+            Parameters.plcParams.Completion1 = txt_Completion_Add1.Text;
+            Parameters.plcParams.Trigger_Detection2 = txt_Trigger_Detection2.Text;
+            Parameters.plcParams.Completion2 = txt_Completion_Add2.Text;
             XMLHelper.serialize<Parameters.PLCParams>(Parameters.plcParams, "Parameter/PLCParams.xml");
 
 
@@ -180,31 +180,6 @@ namespace WY_App
 
             MessageBox.Show("系统参数修改，请重启软件");
             this.Close();
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-     
-
-        private void uiCheckBox3_CheckedChanged(object sender, EventArgs e)
-        {
-            Parameters.cameraParam.CamSoftwareMode = uiCheckBox3.Checked;
-            //MainForm.HivCam.SoftTrigger(0);
-        }
-
-        private void uiRadioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-            Parameters.cameraParam.CamContinuesMode = !uiRadioButton5.Checked;
-            //MainForm.HivCam.TriggerMode(0);
-        }
-
-        private void uiRadioButton6_CheckedChanged(object sender, EventArgs e)
-        {
-            Parameters.cameraParam.CamContinuesMode = uiRadioButton6.Checked;
-            //MainForm.HivCam.ContinuesMode(0);
         }
     }
 }

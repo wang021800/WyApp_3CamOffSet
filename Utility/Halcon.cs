@@ -4,6 +4,7 @@ using SevenZip.Compression.LZ;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
@@ -35,8 +36,10 @@ namespace WY_App.Utility
                 HOperatorSet.SetFramegrabberParam(hv_AcqHandle, "grab_timeout", 20000);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                LogHelper.Log.WriteError(System.DateTime.Now.ToString() + CamID + "相机链接失败" + ex.Message);
+                MainForm.AlarmList.Add(System.DateTime.Now.ToString() + CamID + "相机链接失败" + ex.Message);
                 return false;
             }
 
@@ -307,10 +310,11 @@ namespace WY_App.Utility
 
             return true;
         }
+        
+
         public static bool DetectionHalconRegion(int CamNum, int BaseNum, HWindow[] hWindow, HObject hImage, Parameters.DetectionSpec spec , HObject hObject ,ref List<DetectionResult>  detectionResult)
         {
-            // Local iconic variables 
-            detectionResult.Clear();
+            // Local iconic variables             
             HObject ho_ImageReduced, ho_Region, ho_ConnectedRegions;
             HObject ho_SelectedRegions1, ho_ObjectSelected, ho_SelectedRegions;
             HObject ho_Rectangle;
@@ -468,7 +472,14 @@ namespace WY_App.Utility
                     {
                         hv_Column12[i] = hv_Width[CamNum] - 500;
                     }
-                    HOperatorSet.CropPart(hImage, out detectionResult1.NGAreahObject, hv_Row12[i] - 500, hv_Column12[i] - 500, hv_Row12[i] + 500, hv_Column12[i] + 500);
+                    HOperatorSet.CropPart(hImage, out detectionResult1.NGAreahObject, hv_Row12[i], hv_Column12[i], 1000, 1000);
+                    string stfFileNameOut = "CAM" + CamNum + "-Area-" + i + MainForm.productSN + "-" + MainForm.strDateTime;  // 默认的图像保存名称
+                    string pathOut = Parameters.commministion.ImageSavePath + "/" + MainForm.strDateTimeDay + "/" + MainForm.productSN + "/";
+                    if (!System.IO.Directory.Exists(pathOut))
+                    {
+                        System.IO.Directory.CreateDirectory(pathOut);//不存在就创建文件夹
+                    }
+                    HOperatorSet.WriteImage(detectionResult1.NGAreahObject, "jpeg", 0, pathOut + stfFileNameOut + ".jpeg");
                     detectionResult.Add(detectionResult1);
                     HOperatorSet.SetColor(hWindow[0], "red");
                     HOperatorSet.SetTposition(hWindow[0], hv_Row12[i], hv_Column12[i]);

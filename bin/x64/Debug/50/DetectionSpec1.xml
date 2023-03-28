@@ -2,12 +2,8 @@
 <DetectionSpec xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <PixelResolutionRow>1</PixelResolutionRow>
   <PixelResolutionColum>1</PixelResolutionColum>
-  <RowAOI1>10</RowAOI1>
-  <ColumAOI1>20</ColumAOI1>
-  <RowAOI2>1000</RowAOI2>
-  <ColumAOI2>1000</ColumAOI2>
   <RowBase>
-    <double>2487.3384162933903</double>
+    <double>2491.5269463680738</double>
   </RowBase>
   <ColumBase>
     <double>0</double>

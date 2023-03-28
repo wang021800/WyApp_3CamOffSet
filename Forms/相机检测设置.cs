@@ -17,6 +17,10 @@ using OpenCvSharp.XImgProc;
 using HalconDotNet;
 using static WY_App.Utility.Parameters;
 using WY_App.UserControls;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.CompilerServices;
+using System.Data.SqlTypes;
 
 namespace WY_App
 {
@@ -135,13 +139,62 @@ namespace WY_App
             HOperatorSet.DispObj(MainForm.hImage[MainForm.CamNum], hWindows[0]);
             Halcon.DetectionHalconLine(MainForm.CamNum,2, hWindows[0], MainForm.hImage[MainForm.CamNum], Parameters.detectionSpec[MainForm.CamNum], 200, ref BaseReault[MainForm.CamNum,2]);
         }
-
+        List<DetectionResult> detectionResults;
         private void btn_Detection_Click(object sender, EventArgs e)
         {
-
             System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
-            Detection(MainForm.CamNum, hWindows, MainForm.hImage[MainForm.CamNum],messageShow3,messageShow4);
+            DateTime dtNow = System.DateTime.Now;  // 获取系统当前时间
+            MainForm.strDateTime = dtNow.ToString("HHmmss");
+            MainForm.strDateTimeDay = dtNow.ToString("yyyy-MM-dd");
+            detectionResults = new List<DetectionResult>();
+            Detection(MainForm.CamNum, hWindows, MainForm.hImage[MainForm.CamNum], ref detectionResults);
+            this.Invoke((EventHandler)delegate
+            {
+                if (detectionResults.Count == 1)
+                {
+                    HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
+                    HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
+                    hWindows[1].ClearWindow();
+                    hWindows[2].ClearWindow();
+                    hWindows[1].DispObj(detectionResults[0].NGAreahObject);
+                    messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
+                    messageShow3.lab_Column.Text = detectionResults[0].ResultXPosition.ToString();
+                    messageShow3.lab_Row.Text = detectionResults[0].ResultYPosition.ToString();
+                    messageShow3.lab_Size.Text = detectionResults[0].ResultSize.ToString();
+                    messageShow3.lab_Kind.Text = detectionResults[0].ResultKind.ToString();
+                    messageShow3.lab_Level.Text = detectionResults[0].ResultLevel.ToString();
+                    messageShow3.lab_Gray.Text = detectionResults[0].ResultGray.ToString();
+                }
+                if (detectionResults.Count > 1)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        hWindows[i + 1].ClearWindow();
+                        HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
+                        HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
+                        hWindows[i + 1].DispObj(detectionResults[i].NGAreahObject);
+                    }
+                    messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
+                    messageShow3.lab_Column.Text = detectionResults[0].ResultXPosition.ToString();
+                    messageShow3.lab_Row.Text = detectionResults[0].ResultYPosition.ToString();
+                    messageShow3.lab_Size.Text = detectionResults[0].ResultSize.ToString();
+                    messageShow3.lab_Kind.Text = detectionResults[0].ResultKind.ToString();
+                    messageShow3.lab_Level.Text = detectionResults[0].ResultLevel.ToString();
+                    messageShow3.lab_Gray.Text = detectionResults[0].ResultGray.ToString();
+                    messageShow4.lab_Timer.Text = detectionResults[1].ResultdateTime.ToString();
+                    messageShow4.lab_Column.Text = detectionResults[1].ResultXPosition.ToString();
+                    messageShow4.lab_Row.Text = detectionResults[1].ResultYPosition.ToString();
+                    messageShow4.lab_Size.Text = detectionResults[1].ResultSize.ToString();
+                    messageShow4.lab_Kind.Text = detectionResults[1].ResultKind.ToString();
+                    messageShow4.lab_Level.Text = detectionResults[1].ResultLevel.ToString();
+                    messageShow4.lab_Gray.Text = detectionResults[1].ResultGray.ToString();
+                }
+            });
+
+
+
+
             stopwatch.Stop(); //  停止监视
             TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
@@ -164,8 +217,7 @@ namespace WY_App
             }
             
         }
-
-        public static void Detection(int indexCam, HWindow[] hWindows,HObject hImage,MessageShow messageShow0, MessageShow messageShow1)
+        public static void Detection(int indexCam, HWindow[] hWindows,HObject hImage, ref List<DetectionResult> detectionResult)
         {
             if( Parameters.specifications.MeanImageEnabled)
             {
@@ -232,11 +284,10 @@ namespace WY_App
                 HOperatorSet.HomMat2dIdentity(out HomMat2DIdentity);
                 HOperatorSet.HomMat2dRotate(HomMat2DIdentity, 0, Row, Column, out HomMat2DRotate);
                 HOperatorSet.AffineTransImage(MainForm.hoRegions[indexCam], out ImageAffineTran, HomMat2DRotate, "constant", "false");
-                detectionResults[MainForm.CamNum] = new List<DetectionResult>();
                 for (int indexKind = 0; indexKind < 6; indexKind++)
                 {
 
-                    Halcon.DetectionHalconRegion(indexCam, indexKind, hWindows, hImage, Parameters.detectionSpec[indexCam], MainForm.hoRegions[indexCam], ref detectionResults[indexCam]);
+                    Halcon.DetectionHalconRegion(indexCam, indexKind, hWindows, hImage, Parameters.detectionSpec[indexCam], MainForm.hoRegions[indexCam], ref detectionResult);
                 }                
             }
             catch
@@ -246,62 +297,11 @@ namespace WY_App
                 //MessageBox.Show("瑕疵检测处理异常，请联系软件工程师", "严重错误提示");
                 //return;
             }
-            if (detectionResults[indexCam].Count == 1)
-            {
-                HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
-                HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
-                hWindows[1].ClearWindow();
-                hWindows[2].ClearWindow();
-                hWindows[1].DispObj(detectionResults[indexCam][0].NGAreahObject);
-                messageShow0.lab_Timer.Text = detectionResults[indexCam][0].ResultdateTime.ToString();
-                messageShow0.lab_Column.Text = detectionResults[indexCam][0].ResultXPosition.ToString();
-                messageShow0.lab_Row.Text = detectionResults[indexCam][0].ResultYPosition.ToString();
-                messageShow0.lab_Size.Text = detectionResults[indexCam][0].ResultSize.ToString();
-                messageShow0.lab_Kind.Text = detectionResults[indexCam][0].ResultKind.ToString();
-                messageShow0.lab_Level.Text = detectionResults[indexCam][0].ResultLevel.ToString();
-                messageShow0.lab_Gray.Text = detectionResults[indexCam][0].ResultGray.ToString();
-            }
-            if (detectionResults[indexCam].Count > 1)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    hWindows[i + 1].ClearWindow();
-                    HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
-                    HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
-                    hWindows[i + 1].DispObj(detectionResults[indexCam][i].NGAreahObject);
-                }
-                messageShow0.lab_Timer.Text = detectionResults[indexCam][0].ResultdateTime.ToString();
-                messageShow0.lab_Column.Text = detectionResults[indexCam][0].ResultXPosition.ToString();
-                messageShow0.lab_Row.Text = detectionResults[indexCam][0].ResultYPosition.ToString();
-                messageShow0.lab_Size.Text = detectionResults[indexCam][0].ResultSize.ToString();
-                messageShow0.lab_Kind.Text = detectionResults[indexCam][0].ResultKind.ToString();
-                messageShow0.lab_Level.Text = detectionResults[indexCam][0].ResultLevel.ToString();
-                messageShow0.lab_Gray.Text = detectionResults[indexCam][0].ResultGray.ToString();
-                messageShow1.lab_Timer.Text = detectionResults[indexCam][1].ResultdateTime.ToString();
-                messageShow1.lab_Column.Text = detectionResults[indexCam][1].ResultXPosition.ToString();
-                messageShow1.lab_Row.Text = detectionResults[indexCam][1].ResultYPosition.ToString();
-                messageShow1.lab_Size.Text = detectionResults[indexCam][1].ResultSize.ToString();
-                messageShow1.lab_Kind.Text = detectionResults[indexCam][1].ResultKind.ToString();
-                messageShow1.lab_Level.Text = detectionResults[indexCam][1].ResultLevel.ToString();
-                messageShow1.lab_Gray.Text = detectionResults[indexCam][1].ResultGray.ToString();
-            }
             HomMat2DIdentity.Dispose();
             HomMat2DRotate.Dispose();
             Row.Dispose();
             Column.Dispose();
             IsOverlapping.Dispose();
-
-            if (detectionResults[indexCam].Count == 1)
-            {
-                hWindows[1].DispObj(detectionResults[indexCam][0].NGAreahObject);
-            }
-            if (detectionResults[indexCam].Count >= 1)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    hWindows[i+1].DispObj(detectionResults[indexCam][i].NGAreahObject);
-                }
-            }   
         }
 
         private void btn_DrawAOI_Click(object sender, EventArgs e)
@@ -354,54 +354,56 @@ namespace WY_App
             Halcon.DetectionShowAOI(MainForm.CamNum, hWindows[0], out MainForm.hoRegions[MainForm.CamNum]);
         }
 
-        static List<DetectionResult>[] detectionResults = new List<DetectionResult>[3];
         private void btnn_IndicationTest_Click(object sender, EventArgs e)
         {
+            DateTime dtNow = System.DateTime.Now;  // 获取系统当前时间
+            MainForm.strDateTime = dtNow.ToString("HHmmss");
+            MainForm.strDateTimeDay = dtNow.ToString("yyyy-MM-dd");
             if (Parameters.specifications.MeanImageEnabled)
             {
                 Halcon.DetectionMeanImageint((MeanImageEnum)Parameters.specifications.meanImageEnum, MainForm.hImage[MainForm.CamNum], ref MainForm.hImage[MainForm.CamNum]);
             }
             HOperatorSet.DispObj(MainForm.hImage[MainForm.CamNum], hWindows[0]);
-            detectionResults[MainForm.CamNum] = new List<DetectionResult>();
-            Halcon.DetectionHalconRegion(MainForm.CamNum, cmb_Indication.SelectedIndex, hWindows, MainForm.hImage[MainForm.CamNum], Parameters.detectionSpec[MainForm.CamNum], MainForm.hoRegions[MainForm.CamNum],ref detectionResults[MainForm.CamNum]);
-            if (detectionResults[MainForm.CamNum].Count == 1)
+            detectionResults = new List<DetectionResult>();
+            Halcon.DetectionHalconRegion(MainForm.CamNum, cmb_Indication.SelectedIndex, hWindows, MainForm.hImage[MainForm.CamNum], Parameters.detectionSpec[MainForm.CamNum], MainForm.hoRegions[MainForm.CamNum],ref detectionResults);
+            if (detectionResults.Count == 1)
             {
                 HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
                 HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
                 hWindows[1].ClearWindow();
                 hWindows[2].ClearWindow();
-                hWindows[1].DispObj(detectionResults[MainForm.CamNum][0].NGAreahObject);
-                messageShow3.lab_Timer.Text = detectionResults[MainForm.CamNum][0].ResultdateTime.ToString();
-                messageShow3.lab_Column.Text = detectionResults[MainForm.CamNum][0].ResultXPosition.ToString();
-                messageShow3.lab_Row.Text = detectionResults[MainForm.CamNum][0].ResultYPosition.ToString();
-                messageShow3.lab_Size.Text = detectionResults[MainForm.CamNum][0].ResultSize.ToString();
-                messageShow3.lab_Kind.Text = detectionResults[MainForm.CamNum][0].ResultKind.ToString();
-                messageShow3.lab_Level.Text = detectionResults[MainForm.CamNum][0].ResultLevel.ToString();
-                messageShow3.lab_Gray.Text = detectionResults[MainForm.CamNum][0].ResultGray.ToString();
+                hWindows[1].DispObj(detectionResults[0].NGAreahObject);
+                messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
+                messageShow3.lab_Column.Text = detectionResults[0].ResultXPosition.ToString();
+                messageShow3.lab_Row.Text = detectionResults[0].ResultYPosition.ToString();
+                messageShow3.lab_Size.Text = detectionResults[0].ResultSize.ToString();
+                messageShow3.lab_Kind.Text = detectionResults[0].ResultKind.ToString();
+                messageShow3.lab_Level.Text = detectionResults[0].ResultLevel.ToString();
+                messageShow3.lab_Gray.Text = detectionResults[0].ResultGray.ToString();
             }
-            if (detectionResults[MainForm.CamNum].Count > 1)
+            if (detectionResults.Count > 1)
             {
                 for (int i = 0; i < 2; i++)
                 {
                     hWindows[i+1].ClearWindow();
                     HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
                     HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
-                    hWindows[i + 1].DispObj(detectionResults[MainForm.CamNum][i].NGAreahObject);
+                    hWindows[i + 1].DispObj(detectionResults[i].NGAreahObject);
                 }
-                messageShow3.lab_Timer.Text = detectionResults[MainForm.CamNum][0].ResultdateTime.ToString();
-                messageShow3.lab_Column.Text = detectionResults[MainForm.CamNum][0].ResultXPosition.ToString();
-                messageShow3.lab_Row.Text = detectionResults[MainForm.CamNum][0].ResultYPosition.ToString();
-                messageShow3.lab_Size.Text = detectionResults[MainForm.CamNum][0].ResultSize.ToString();
-                messageShow3.lab_Kind.Text = detectionResults[MainForm.CamNum][0].ResultKind.ToString();
-                messageShow3.lab_Level.Text = detectionResults[MainForm.CamNum][0].ResultLevel.ToString();
-                messageShow3.lab_Gray.Text = detectionResults[MainForm.CamNum][0].ResultGray.ToString();
-                messageShow4.lab_Timer.Text = detectionResults[MainForm.CamNum][1].ResultdateTime.ToString();
-                messageShow4.lab_Column.Text = detectionResults[MainForm.CamNum][1].ResultXPosition.ToString();
-                messageShow4.lab_Row.Text = detectionResults[MainForm.CamNum][1].ResultYPosition.ToString();
-                messageShow4.lab_Size.Text = detectionResults[MainForm.CamNum][1].ResultSize.ToString();
-                messageShow4.lab_Kind.Text = detectionResults[MainForm.CamNum][1].ResultKind.ToString();
-                messageShow4.lab_Level.Text = detectionResults[MainForm.CamNum][1].ResultLevel.ToString();
-                messageShow4.lab_Gray.Text = detectionResults[MainForm.CamNum][1].ResultGray.ToString();
+                messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
+                messageShow3.lab_Column.Text = detectionResults[0].ResultXPosition.ToString();
+                messageShow3.lab_Row.Text = detectionResults[0].ResultYPosition.ToString();
+                messageShow3.lab_Size.Text = detectionResults[0].ResultSize.ToString();
+                messageShow3.lab_Kind.Text = detectionResults[0].ResultKind.ToString();
+                messageShow3.lab_Level.Text = detectionResults[0].ResultLevel.ToString();
+                messageShow3.lab_Gray.Text = detectionResults[0].ResultGray.ToString();
+                messageShow4.lab_Timer.Text = detectionResults[1].ResultdateTime.ToString();
+                messageShow4.lab_Column.Text = detectionResults[1].ResultXPosition.ToString();
+                messageShow4.lab_Row.Text = detectionResults[1].ResultYPosition.ToString();
+                messageShow4.lab_Size.Text = detectionResults[1].ResultSize.ToString();
+                messageShow4.lab_Kind.Text = detectionResults[1].ResultKind.ToString();
+                messageShow4.lab_Level.Text = detectionResults[1].ResultLevel.ToString();
+                messageShow4.lab_Gray.Text = detectionResults[1].ResultGray.ToString();
             }
         }
 
@@ -501,6 +503,63 @@ namespace WY_App
         private void PixelResolutionRow_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+        private delegate void SetTextValueCallBack(int i, HObject hObject, string path);
+
+        //声明回调
+        private SetTextValueCallBack setCallBack;
+
+        private void SaveImages(int i, HObject hObject, string path)
+        {
+            string stfFileNameOut = "CAM" + MainForm.CamNum + path + i + MainForm.productSN + "-" + MainForm.strDateTime;  // 默认的图像保存名称  // 默认的图像保存名称
+            string pathOut = Parameters.commministion.ImageSavePath + "/" + MainForm.strDateTimeDay + "/" + MainForm.productSN + "/";
+            if (!System.IO.Directory.Exists(pathOut))
+            {
+                System.IO.Directory.CreateDirectory(pathOut);//不存在就创建文件夹
+            }
+            HOperatorSet.WriteImage(hObject, "jpeg", 0, pathOut + stfFileNameOut + ".jpeg");
+        }
+        private void uiButton1_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start(); //  开始监视代码运行时间
+            List<DetectionResult> detectionResults = new List<DetectionResult>();           
+            setCallBack = SaveImages;
+            this.Invoke(setCallBack, MainForm.CamNum, MainForm.hImage[MainForm.CamNum], "-IN-");
+            stopwatch.Stop(); //  停止监视
+            TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
+            double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
+            lab_detectionTime.Text = milliseconds.ToString();
+            
+        }
+
+        private void uiButton2_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start(); //  开始监视代码运行时间
+            HOperatorSet.DumpWindowImage(out MainForm.hObjectOut[MainForm.CamNum], hWindows[0]);
+            setCallBack = SaveImages;
+            this.Invoke(setCallBack, MainForm.CamNum, MainForm.hObjectOut[MainForm.CamNum], "-OUT-");
+            stopwatch.Stop(); //  停止监视
+            TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
+            double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
+            lab_detectionTime.Text = milliseconds.ToString();
+        }
+
+        private void uiButton3_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start(); //  开始监视代码运行时间
+
+            setCallBack = SaveImages;
+            for(int i=0;i< detectionResults.Count; i++)
+            {             
+                this.Invoke(setCallBack, i, detectionResults[i].NGAreahObject, "-Area-");
+            }
+            stopwatch.Stop(); //  停止监视
+            TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
+            double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
+            lab_detectionTime.Text = milliseconds.ToString();
         }
     }
 }
