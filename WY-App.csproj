@@ -229,8 +229,6 @@
     <Compile Include="UserControls\卡尺参数设置.Designer.cs">
       <DependentUpon>卡尺参数设置.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utility\BalserCamera.cs" />
-    <Compile Include="Utility\Constructor.cs" />
     <Compile Include="Utility\Halcon.cs" />
     <Compile Include="Utility\HalconTools.cs" />
     <Compile Include="Utility\HslCommunication.cs" />

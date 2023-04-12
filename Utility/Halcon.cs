@@ -33,13 +33,12 @@ namespace WY_App.Utility
                 HOperatorSet.OpenFramegrabber("GenICamTL", 0, 0, 0, 0, 0, 0, "progressive", -1, "default", -1, "false", "default", CamID, 0, -1, out hv_AcqHandle);
                 HOperatorSet.SetFramegrabberParam(hv_AcqHandle, "TriggerMode", "Off");
                 HOperatorSet.SetFramegrabberParam(hv_AcqHandle, "TriggerSource", "Software");
-                HOperatorSet.SetFramegrabberParam(hv_AcqHandle, "grab_timeout", 20000);
+                HOperatorSet.SetFramegrabberParam(hv_AcqHandle, "grab_timeout", 5000);
                 return true;
             }
             catch (Exception ex)
             {
-                LogHelper.Log.WriteError(System.DateTime.Now.ToString() + CamID + "相机链接失败" + ex.Message);
-                MainForm.AlarmList.Add(System.DateTime.Now.ToString() + CamID + "相机链接失败" + ex.Message);
+                LogHelper.WriteError(System.DateTime.Now.ToString() + CamID + "相机链接失败" + ex.Message);               
                 return false;
             }
 
@@ -68,8 +67,7 @@ namespace WY_App.Utility
                     }
                     else
                     {
-                        LogHelper.Log.WriteError(System.DateTime.Now.ToString() + "相机1链接成功");
-                        MainForm.AlarmList.Add(System.DateTime.Now.ToString() + "相机1链接成功");
+                        LogHelper.WriteInfo(System.DateTime.Now.ToString() + "相机1链接成功");                       
                     }
                 }
                 while (!CamConnect[1])
@@ -81,8 +79,7 @@ namespace WY_App.Utility
                     }
                     else
                     {
-                        LogHelper.Log.WriteError(System.DateTime.Now.ToString() + "相机2链接成功");
-                        MainForm.AlarmList.Add(System.DateTime.Now.ToString() + "相机2链接成功");
+                        LogHelper.WriteInfo(System.DateTime.Now.ToString() + "相机2链接成功");
                     }
                 } while (!CamConnect[2])
                 {
@@ -93,8 +90,7 @@ namespace WY_App.Utility
                     }
                     else
                     {
-                        LogHelper.Log.WriteError(System.DateTime.Now.ToString() + "相机3链接成功");
-                        MainForm.AlarmList.Add(System.DateTime.Now.ToString() + "相机3链接成功");
+                        LogHelper.WriteInfo(System.DateTime.Now.ToString() + "相机3链接成功");
                     }
                 }
             }
@@ -247,7 +243,7 @@ namespace WY_App.Utility
         /// <param name="rect1"></param>
         /// <param name="PointXY"></param>
         /// <returns></returns>
-        public static bool DetectionHalconLine(int CamNum,int BaseNum ,HWindow hWindow, HObject hImage, Parameters.DetectionSpec rect1, HTuple length, ref HRect1 PointXY)
+        public static bool DetectionHalconLine(int CamNum, int BaseNum, HWindow hWindow, HObject hImage, Parameters.DetectionSpec rect1, ref HRect1 PointXY)
         {
 
             HObject ho_Contours, ho_Cross, ho_Contour;
@@ -275,14 +271,14 @@ namespace WY_App.Utility
             //添加测量对象
             HOperatorSet.SetMetrologyModelImageSize(hv_MetrologyHandle, hv_Width[CamNum], hv_Height[CamNum]);
             hv_Index.Dispose();
-            HOperatorSet.AddMetrologyObjectGeneric(hv_MetrologyHandle, "line", hv_shapeParam, length, 30, 5, 10, new HTuple(), new HTuple(), out hv_Index);
+            HOperatorSet.AddMetrologyObjectGeneric(hv_MetrologyHandle, "line", hv_shapeParam, rect1.MeasureLength1[BaseNum], rect1.MeasureLength2[BaseNum], rect1.MeasureSigma[BaseNum], rect1.MeasureThreshold[BaseNum], new HTuple(), new HTuple(), out hv_Index);
 
             //执行测量，获取边缘点集
             HOperatorSet.SetColor(hWindow, "yellow");
             HOperatorSet.ApplyMetrologyModel(hImage, hv_MetrologyHandle);
             hv_Row.Dispose(); hv_Column.Dispose();
             HOperatorSet.GetMetrologyObjectMeasures(out ho_Contours, hv_MetrologyHandle, "all", "all", out hv_Row, out hv_Column);
-            //HOperatorSet.DispObj(ho_Contours, hWindow);
+            HOperatorSet.DispObj(ho_Contours, hWindow);
             HOperatorSet.SetColor(hWindow, "red");
             HOperatorSet.GenCrossContourXld(out ho_Cross, hv_Row, hv_Column, 1, 0.785398);
             //获取最终测量数据和轮廓线
@@ -310,7 +306,7 @@ namespace WY_App.Utility
 
             return true;
         }
-        
+
 
         public static bool DetectionHalconRegion(int CamNum, int BaseNum, HWindow[] hWindow, HObject hImage, Parameters.DetectionSpec spec , HObject hObject ,ref List<DetectionResult>  detectionResult)
         {

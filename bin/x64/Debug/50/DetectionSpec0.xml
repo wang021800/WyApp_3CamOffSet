@@ -3,10 +3,10 @@
   <PixelResolutionRow>1</PixelResolutionRow>
   <PixelResolutionColum>1</PixelResolutionColum>
   <RowBase>
-    <double>2501.6650404668667</double>
+    <double>2499.5835289755764</double>
   </RowBase>
   <ColumBase>
-    <double>1294.492234608033</double>
+    <double>1352.1198070001026</double>
   </ColumBase>
   <Row1>
     <double>3113.3519924098673</double>
@@ -39,7 +39,7 @@
     <unsignedInt>10</unsignedInt>
   </MeasureLength2>
   <MeasureSigma>
-    <double>5</double>
+    <double>10</double>
     <double>10</double>
     <double>10</double>
   </MeasureSigma>

@@ -49,6 +49,9 @@
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.PixelResolutionRow = new System.Windows.Forms.Panel();
+            this.uiButton3 = new Sunny.UI.UIButton();
+            this.uiButton2 = new Sunny.UI.UIButton();
+            this.uiButton1 = new Sunny.UI.UIButton();
             this.btn_OpenTestimage = new Sunny.UI.UIButton();
             this.btn_XBaseSetting = new Sunny.UI.UIButton();
             this.chk_MeanImageEnabled = new System.Windows.Forms.CheckBox();
@@ -96,9 +99,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.hWindowControl4 = new HalconDotNet.HWindowControl();
             this.bunifuElipse1 = new Bunifu.Framework.UI.BunifuElipse(this.components);
-            this.uiButton1 = new Sunny.UI.UIButton();
-            this.uiButton2 = new Sunny.UI.UIButton();
-            this.uiButton3 = new Sunny.UI.UIButton();
+            this.uiButton4 = new Sunny.UI.UIButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -279,6 +280,7 @@
             this.hWindowControl2.Size = new System.Drawing.Size(384, 381);
             this.hWindowControl2.TabIndex = 3;
             this.hWindowControl2.WindowSize = new System.Drawing.Size(384, 381);
+            this.hWindowControl2.HMouseDown += new HalconDotNet.HMouseEventHandler(this.hWindowControl2_HMouseDown);
             // 
             // panel1
             // 
@@ -345,6 +347,7 @@
             // 
             // PixelResolutionRow
             // 
+            this.PixelResolutionRow.Controls.Add(this.uiButton4);
             this.PixelResolutionRow.Controls.Add(this.uiButton3);
             this.PixelResolutionRow.Controls.Add(this.uiButton2);
             this.PixelResolutionRow.Controls.Add(this.uiButton1);
@@ -396,6 +399,54 @@
             this.PixelResolutionRow.Size = new System.Drawing.Size(316, 885);
             this.PixelResolutionRow.TabIndex = 6;
             this.PixelResolutionRow.Paint += new System.Windows.Forms.PaintEventHandler(this.PixelResolutionRow_Paint);
+            // 
+            // uiButton3
+            // 
+            this.uiButton3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton3.FillColor = System.Drawing.Color.Black;
+            this.uiButton3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton3.Location = new System.Drawing.Point(200, 670);
+            this.uiButton3.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton3.Name = "uiButton3";
+            this.uiButton3.Radius = 20;
+            this.uiButton3.Size = new System.Drawing.Size(107, 29);
+            this.uiButton3.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton3.TabIndex = 84;
+            this.uiButton3.Text = "保存瑕疵图";
+            this.uiButton3.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton3.Click += new System.EventHandler(this.uiButton3_Click);
+            // 
+            // uiButton2
+            // 
+            this.uiButton2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton2.FillColor = System.Drawing.Color.Black;
+            this.uiButton2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton2.Location = new System.Drawing.Point(104, 670);
+            this.uiButton2.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton2.Name = "uiButton2";
+            this.uiButton2.Radius = 20;
+            this.uiButton2.Size = new System.Drawing.Size(90, 29);
+            this.uiButton2.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton2.TabIndex = 83;
+            this.uiButton2.Text = "保存检测图";
+            this.uiButton2.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton2.Click += new System.EventHandler(this.uiButton2_Click);
+            // 
+            // uiButton1
+            // 
+            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton1.FillColor = System.Drawing.Color.Black;
+            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Location = new System.Drawing.Point(12, 670);
+            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton1.Name = "uiButton1";
+            this.uiButton1.Radius = 20;
+            this.uiButton1.Size = new System.Drawing.Size(86, 29);
+            this.uiButton1.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton1.TabIndex = 82;
+            this.uiButton1.Text = "保存原图";
+            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
             // 
             // btn_OpenTestimage
             // 
@@ -456,6 +507,7 @@
             this.btn_DrawAOI.TabIndex = 71;
             this.btn_DrawAOI.Text = "绘制检测区域";
             this.btn_DrawAOI.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_DrawAOI.Visible = false;
             this.btn_DrawAOI.Click += new System.EventHandler(this.btn_DrawAOI_Click);
             // 
             // btn_MeanImageTest
@@ -488,6 +540,7 @@
             this.btn_SaveAOI.TabIndex = 72;
             this.btn_SaveAOI.Text = "保存检测区域";
             this.btn_SaveAOI.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_SaveAOI.Visible = false;
             this.btn_SaveAOI.Click += new System.EventHandler(this.btn_SaveAOI_Click);
             // 
             // num_AreaHigh
@@ -632,6 +685,7 @@
             this.btn_ShowAOI.TabIndex = 70;
             this.btn_ShowAOI.Text = "显示检测区域";
             this.btn_ShowAOI.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_ShowAOI.Visible = false;
             this.btn_ShowAOI.Click += new System.EventHandler(this.btn_ShowAOI_Click);
             // 
             // cmb_MeanImageList
@@ -917,11 +971,11 @@
             this.btn_Save.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_Save.FillColor = System.Drawing.Color.Black;
             this.btn_Save.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_Save.Location = new System.Drawing.Point(166, 408);
+            this.btn_Save.Location = new System.Drawing.Point(220, 409);
             this.btn_Save.MinimumSize = new System.Drawing.Size(1, 1);
             this.btn_Save.Name = "btn_Save";
             this.btn_Save.Radius = 20;
-            this.btn_Save.Size = new System.Drawing.Size(100, 29);
+            this.btn_Save.Size = new System.Drawing.Size(85, 29);
             this.btn_Save.Style = Sunny.UI.UIStyle.Custom;
             this.btn_Save.TabIndex = 17;
             this.btn_Save.Text = "保存";
@@ -933,7 +987,7 @@
             this.btn_Detection.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_Detection.FillColor = System.Drawing.Color.Black;
             this.btn_Detection.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_Detection.Location = new System.Drawing.Point(62, 408);
+            this.btn_Detection.Location = new System.Drawing.Point(109, 409);
             this.btn_Detection.MinimumSize = new System.Drawing.Size(1, 1);
             this.btn_Detection.Name = "btn_Detection";
             this.btn_Detection.Radius = 20;
@@ -1145,59 +1199,28 @@
             this.hWindowControl4.Size = new System.Drawing.Size(596, 1074);
             this.hWindowControl4.TabIndex = 0;
             this.hWindowControl4.WindowSize = new System.Drawing.Size(596, 1074);
+            this.hWindowControl4.HMouseDown += new HalconDotNet.HMouseEventHandler(this.hWindowControl4_HMouseDown);
             // 
             // bunifuElipse1
             // 
             this.bunifuElipse1.ElipseRadius = 5;
             this.bunifuElipse1.TargetControl = this;
             // 
-            // uiButton1
+            // uiButton4
             // 
-            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.uiButton1.FillColor = System.Drawing.Color.Black;
-            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton1.Location = new System.Drawing.Point(12, 670);
-            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiButton1.Name = "uiButton1";
-            this.uiButton1.Radius = 20;
-            this.uiButton1.Size = new System.Drawing.Size(86, 29);
-            this.uiButton1.Style = Sunny.UI.UIStyle.Custom;
-            this.uiButton1.TabIndex = 82;
-            this.uiButton1.Text = "保存原图";
-            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
-            // 
-            // uiButton2
-            // 
-            this.uiButton2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.uiButton2.FillColor = System.Drawing.Color.Black;
-            this.uiButton2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton2.Location = new System.Drawing.Point(104, 670);
-            this.uiButton2.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiButton2.Name = "uiButton2";
-            this.uiButton2.Radius = 20;
-            this.uiButton2.Size = new System.Drawing.Size(90, 29);
-            this.uiButton2.Style = Sunny.UI.UIStyle.Custom;
-            this.uiButton2.TabIndex = 83;
-            this.uiButton2.Text = "保存检测图";
-            this.uiButton2.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton2.Click += new System.EventHandler(this.uiButton2_Click);
-            // 
-            // uiButton3
-            // 
-            this.uiButton3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.uiButton3.FillColor = System.Drawing.Color.Black;
-            this.uiButton3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton3.Location = new System.Drawing.Point(200, 670);
-            this.uiButton3.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiButton3.Name = "uiButton3";
-            this.uiButton3.Radius = 20;
-            this.uiButton3.Size = new System.Drawing.Size(107, 29);
-            this.uiButton3.Style = Sunny.UI.UIStyle.Custom;
-            this.uiButton3.TabIndex = 84;
-            this.uiButton3.Text = "保存瑕疵图";
-            this.uiButton3.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton3.Click += new System.EventHandler(this.uiButton3_Click);
+            this.uiButton4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton4.FillColor = System.Drawing.Color.Black;
+            this.uiButton4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton4.Location = new System.Drawing.Point(12, 409);
+            this.uiButton4.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton4.Name = "uiButton4";
+            this.uiButton4.Radius = 20;
+            this.uiButton4.Size = new System.Drawing.Size(83, 29);
+            this.uiButton4.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton4.TabIndex = 85;
+            this.uiButton4.Text = "基准";
+            this.uiButton4.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton4.Click += new System.EventHandler(this.uiButton4_Click);
             // 
             // 相机检测设置
             // 
@@ -1301,6 +1324,7 @@
         private Sunny.UI.UIButton uiButton1;
         private Sunny.UI.UIButton uiButton2;
         private Sunny.UI.UIButton uiButton3;
+        private Sunny.UI.UIButton uiButton4;
     }
 }
 
