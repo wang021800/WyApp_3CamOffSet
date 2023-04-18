@@ -119,7 +119,6 @@ namespace WY_App
             {
                 MessageBox.Show("只允许输入数字或字母且不能为空，请重新输入!");
             }
-            
         }
 
         private void cmb_UserName_SelectedIndexChanged(object sender, EventArgs e)

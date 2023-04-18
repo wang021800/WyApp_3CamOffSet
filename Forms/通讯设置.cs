@@ -138,7 +138,13 @@ namespace WY_App
             txt_Completion_Add0.Enabled = true;
             num_LogSaveDays.Enabled = true;
 
-            txt_ImageSavePath.Enabled = true;
+			txt_Trigger_Detection1.Enabled = true;
+			txt_Completion_Add1.Enabled = true;
+
+			txt_Trigger_Detection2.Enabled = true;
+			txt_Completion_Add2.Enabled = true;
+
+			txt_ImageSavePath.Enabled = true;
             btn_Save.Enabled = true;
         }
 

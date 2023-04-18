@@ -365,7 +365,7 @@ namespace WY_App
             HOperatorSet.SetLineWidth(hWindows[0], 1);
             try
             {
-                DetectionBase(MainForm.CamNum, hWindows, MainForm.hImage[MainForm.CamNum]);
+                DetectionBase(indexCam, hWindows, hImage);
             }
             catch
             {

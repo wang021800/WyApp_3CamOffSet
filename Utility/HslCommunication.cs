@@ -28,8 +28,8 @@ namespace WY_App
         public static OperateResult _connected ;
         public static NetworkDeviceBase _NetworkTcpDevice;
         static ISyncGpasciiCommunicationInterface communication = null;
-        deviceProperties currentDeviceProp = new deviceProperties();
-        deviceProperties currentDevProp = new deviceProperties();
+        //deviceProperties currentDeviceProp = new deviceProperties();
+        //deviceProperties currentDevProp = new deviceProperties();
         string commands = String.Empty;
         public static string response = String.Empty;
 
@@ -66,19 +66,19 @@ namespace WY_App
             {              
                 try
                 {
-                    //欧姆龙PLC Omron.PMAC.CK3M通讯
-                    if ("Omron.PMAC.CK3M".Equals(Parameters.commministion.PlcType))
-                    {
-                        currentDevProp.IPAddress = Parameters.commministion.PlcIpAddress;
-                        currentDevProp.Password = "deltatau";
-                        currentDevProp.PortNumber = Parameters.commministion.PlcIpPort;
-                        currentDevProp.User = "root";
-                        currentDevProp.Protocol = CommunicationGlobals.ConnectionTypes.SSH;
-                        communication = Connect.CreateSyncGpascii(currentDevProp.Protocol, communication);
-                        plc_connect_result = communication.ConnectGpAscii(currentDevProp.IPAddress, currentDevProp.PortNumber, currentDevProp.User, currentDevProp.Password);                                              
-                    }
+                    ////欧姆龙PLC Omron.PMAC.CK3M通讯
+                    //if ("Omron.PMAC.CK3M".Equals(Parameters.commministion.PlcType))
+                    //{
+                    //    currentDevProp.IPAddress = Parameters.commministion.PlcIpAddress;
+                    //    currentDevProp.Password = "deltatau";
+                    //    currentDevProp.PortNumber = Parameters.commministion.PlcIpPort;
+                    //    currentDevProp.User = "root";
+                    //    currentDevProp.Protocol = CommunicationGlobals.ConnectionTypes.SSH;
+                    //    communication = Connect.CreateSyncGpascii(currentDevProp.Protocol, communication);
+                    //    plc_connect_result = communication.ConnectGpAscii(currentDevProp.IPAddress, currentDevProp.PortNumber, currentDevProp.User, currentDevProp.Password);                                              
+                    //}
                     //欧姆龙PLC OmronFinsNet通讯
-                    else if ("Omron.OmronFinsNet".Equals(Parameters.commministion.PlcType))
+                     if ("Omron.OmronFinsNet".Equals(Parameters.commministion.PlcType))
                     {
                         OmronFinsNet Client = new OmronFinsNet();
                         Client.IpAddress = Parameters.commministion.PlcIpAddress;

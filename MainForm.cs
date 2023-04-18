@@ -134,7 +134,17 @@ namespace WY_App
                 Parameters.specifications = new Parameters.Specifications();
                 XMLHelper.serialize<Parameters.Specifications>(Parameters.specifications, Parameters.commministion.productName + "/Specifications.xml");
             }
-            for (int i = 0; i < 3; i++)
+			try
+			{
+				Constructor.cameraParams = XMLHelper.BackSerialize<Constructor.CameraParams>(Parameters.commministion.productName + "/CameraParams.xml");
+			}
+			catch
+			{
+				Constructor.cameraParams = new Constructor.CameraParams();
+				XMLHelper.serialize<Constructor.CameraParams>(Constructor.cameraParams, Parameters.commministion.productName + "/CameraParams.xml");
+			}
+
+			for (int i = 0; i < 3; i++)
             {
                 try
                 {
@@ -354,18 +364,22 @@ namespace WY_App
                         HOperatorSet.SetPart(hWindows0[0], 0, 0, -1, -1);
                         
                         List<DetectionResult> detectionResults=new List<DetectionResult>();
-                        相机检测设置.Detection(0, hWindows0, MainForm.hImage[0],ref detectionResults);
-                        if (DetectionResult)
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 1);
-                        }
-                        else
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 2);
-                        }
-                        
+                        相机检测设置.Detection(0, hWindows0, hImage[0],ref detectionResults);
 
-                        this.Invoke((EventHandler)delegate 
+						if (Parameters.specifications.SaveOrigalImage)
+						{
+							setCallBack = SaveImages;
+							this.Invoke(setCallBack, 0, hImage[0], "IN-");
+						}
+						if (Parameters.specifications.SaveDefeatImage)
+						{
+							HOperatorSet.DumpWindowImage(out hObjectOut[0], hWindows0[0]);
+							setCallBack = SaveImages;
+							this.Invoke(setCallBack, 0, hImage[0], "OUT-");
+						}
+
+
+						this.Invoke((EventHandler)delegate 
                         {
                             if (detectionResults.Count == 1)
                             {
@@ -408,17 +422,16 @@ namespace WY_App
                             }
                         });
 
-                        if (Parameters.specifications.SaveOrigalImage)
-                        {
-                            setCallBack = SaveImages;
-                            this.Invoke(setCallBack, 0, hImage[0], "IN-");
-                        }
-                        if (Parameters.specifications.SaveDefeatImage)
-                        {
-                            HOperatorSet.DumpWindowImage(out hObjectOut[0], hWindows0[0]);
-                            setCallBack = SaveImages;
-                            this.Invoke(setCallBack, 0, hImage[0], "OUT-");
-                        }
+						if (DetectionResult)
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 1);
+						}
+						else
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 2);
+						}
+
+						
                         stopwatch.Stop(); //  停止监视
                         TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
                         double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
@@ -451,7 +464,7 @@ namespace WY_App
                         }
                         catch
                         {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 2);
+                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion1, 2);
                             Halcon.CamConnect[1] = false;
                             LogHelper.WriteError( "线程2采图异常终止");
                             return;
@@ -464,16 +477,9 @@ namespace WY_App
                         HOperatorSet.SetPart(hWindows1[0], 0, 0, -1, -1);
                         
                         List<DetectionResult> detectionResults = new List<DetectionResult>();
-                        相机检测设置.Detection(1, hWindows1, MainForm.hImage[1], ref detectionResults);
+                        相机检测设置.Detection(1, hWindows1, hImage[1], ref detectionResults);
                         
-                        if (DetectionResult)
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion1, 0);
-                        }
-                        else
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion1, 1);
-                        }
+                      
                         this.Invoke((EventHandler)delegate
                         {
                             if (detectionResults.Count == 1)
@@ -527,7 +533,17 @@ namespace WY_App
                             setCallBack = SaveImages;
                             this.Invoke(setCallBack, 1, hObjectOut[1], "OUT-");
                         }
-                        stopwatch.Stop(); //  停止监视
+
+						if (DetectionResult)
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion1, 0);
+						}
+						else
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion1, 1);
+						}
+
+						stopwatch.Stop(); //  停止监视
                         TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
                         double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
                         LogHelper.WriteInfo("检测2时间:" + milliseconds.ToString());
@@ -559,7 +575,7 @@ namespace WY_App
                         }
                         catch
                         {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion0, 2);
+                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion2, 2);
                             Halcon.CamConnect[2] = false;
                             LogHelper.WriteError("线程3采图异常终止");
                             return;
@@ -571,15 +587,8 @@ namespace WY_App
                         HOperatorSet.DispObj(hImage[2], hWindows2[0]);
                         HOperatorSet.SetPart(hWindows2[0], 0, 0, -1, -1);                      
                         List<DetectionResult> detectionResults = new List<DetectionResult>();
-                        相机检测设置.Detection(2, hWindows2, MainForm.hImage[2], ref detectionResults);
-                        if (DetectionResult)
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion2, 0);
-                        }
-                        else
-                        {
-                            HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion2, 1);
-                        }
+                        相机检测设置.Detection(2, hWindows2, hImage[2], ref detectionResults);
+                       
                         this.Invoke((EventHandler)delegate
                         {
                             if (detectionResults.Count == 1)
@@ -632,9 +641,18 @@ namespace WY_App
                             HOperatorSet.DumpWindowImage(out hObjectOut[2], hWindows2[0]);
                             setCallBack = SaveImages;
                             this.Invoke(setCallBack, 2, hObjectOut[2], "OUT-");
-                        }                       
-                        
-                        stopwatch.Stop(); //  停止监视
+                        }
+
+						if (DetectionResult)
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion2, 0);
+						}
+						else
+						{
+							HslCommunication._NetworkTcpDevice.Write(Parameters.plcParams.Completion2, 1);
+						}
+
+						stopwatch.Stop(); //  停止监视
                         TimeSpan timespan = stopwatch.Elapsed; //  获取当前实例测量得出的总时间
                         double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数           
                         LogHelper.WriteInfo("检测3时间:" + milliseconds.ToString());
@@ -1017,7 +1035,8 @@ namespace WY_App
 
         private void btn_SpecicationSetting_Click(object sender, EventArgs e)
         {
-
-        }
+			FormCamera flg = new FormCamera();
+			flg.ShowDialog();
+		}
     }
 }
