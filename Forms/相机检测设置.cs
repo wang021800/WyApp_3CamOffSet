@@ -151,9 +151,11 @@ namespace WY_App
             Detection(MainForm.CamNum, hWindows, MainForm.hImage[MainForm.CamNum], ref detectionResults);
             this.Invoke((EventHandler)delegate
             {
-                if (detectionResults.Count == 1)
+				
+				if (detectionResults.Count == 1)
                 {
-                    HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
+					AreahObject = detectionResults[0].NGAreahObject;
+					HOperatorSet.SetPart(hWindows[1], 0, 0, 1000, 1000);//设置窗体的规格
                     HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
                     hWindows[1].ClearWindow();
                     hWindows[2].ClearWindow();
@@ -175,7 +177,8 @@ namespace WY_App
                         HOperatorSet.SetPart(hWindows[2], 0, 0, 1000, 1000);//设置窗体的规格
                         hWindows[i + 1].DispObj(detectionResults[i].NGAreahObject);
                     }
-                    messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
+					AreahObject = detectionResults[0].NGAreahObject;
+					messageShow3.lab_Timer.Text = detectionResults[0].ResultdateTime.ToString();
                     messageShow3.lab_Column.Text = detectionResults[0].ResultXPosition.ToString();
                     messageShow3.lab_Row.Text = detectionResults[0].ResultYPosition.ToString();
                     messageShow3.lab_Size.Text = detectionResults[0].ResultSize.ToString();
@@ -329,7 +332,7 @@ namespace WY_App
             Column.Dispose();
             hRow.Dispose();
             hColumn.Dispose();
-
+            
         }
         private void btn_Save_Click(object sender, EventArgs e)
         {
@@ -431,12 +434,22 @@ namespace WY_App
 
         private void chk_SaveDefeatImage_CheckedChanged(object sender, EventArgs e)
         {
-            Parameters.specifications.SaveDefeatImage = chk_SaveDefeatImage.Checked;
+			if (Parameters.specifications.SaveDefeatImage != chk_SaveDefeatImage.Checked)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "SaveDefeatImage:" + Parameters.specifications.SaveDefeatImage + "=>" + chk_SaveDefeatImage.Checked);
+				Parameters.specifications.SaveDefeatImage = chk_SaveDefeatImage.Checked;
+			}
+			Parameters.specifications.SaveDefeatImage = chk_SaveDefeatImage.Checked;
         }
 
         private void chk_SaveOrigalImage_CheckedChanged(object sender, EventArgs e)
         {
-            Parameters.specifications.SaveOrigalImage = chk_SaveOrigalImage.Checked;
+			if (Parameters.specifications.SaveOrigalImage != chk_SaveOrigalImage.Checked)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "SaveOrigalImage:" + Parameters.specifications.SaveOrigalImage + "=>" + chk_SaveOrigalImage.Checked);
+				Parameters.specifications.SaveOrigalImage = chk_SaveOrigalImage.Checked;
+			}
+			Parameters.specifications.SaveOrigalImage = chk_SaveOrigalImage.Checked;
 
         }
         private void btn_XBaseSetting_Click(object sender, EventArgs e)
@@ -537,27 +550,53 @@ namespace WY_App
 
         private void num_lengthWidthRatio_ValueChanged(object sender, double value)
         {
-            Parameters.detectionSpec[MainForm.CamNum].lengthWidthRatio[cmb_Indication.SelectedIndex] = num_lengthWidthRatio.Value;
+			if (Parameters.detectionSpec[MainForm.CamNum].lengthWidthRatio[cmb_Indication.SelectedIndex] != num_lengthWidthRatio.Value)
+			{
+				LogHelper.WriteWarn(" "+MainForm.UserName + "lengthWidthRatio:" + Parameters.detectionSpec[MainForm.CamNum].lengthWidthRatio[cmb_Indication.SelectedIndex] + "  第" + Convert.ToString(cmb_Indication.SelectedIndex) + "号缺陷" + "=>" + num_lengthWidthRatio.Value);
+				Parameters.detectionSpec[MainForm.CamNum].lengthWidthRatio[cmb_Indication.SelectedIndex] = num_lengthWidthRatio.Value;
+			}
+
+			Parameters.detectionSpec[MainForm.CamNum].lengthWidthRatio[cmb_Indication.SelectedIndex] = num_lengthWidthRatio.Value;
         }
 
         private void num_ThresholdLow_ValueChanged(object sender, double value)
         {
-            Parameters.detectionSpec[MainForm.CamNum].ThresholdLow[cmb_Indication.SelectedIndex] = num_ThresholdLow.Value;
+			if (Parameters.detectionSpec[MainForm.CamNum].ThresholdLow[cmb_Indication.SelectedIndex] != num_ThresholdLow.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "ThresholdLow:" + Parameters.detectionSpec[MainForm.CamNum].ThresholdLow[cmb_Indication.SelectedIndex] + "  第" + Convert.ToString(cmb_Indication.SelectedIndex) + "号缺陷" + "=>" + num_ThresholdLow.Value);
+				Parameters.detectionSpec[MainForm.CamNum].ThresholdLow[cmb_Indication.SelectedIndex] = num_ThresholdLow.Value;
+			}
+			Parameters.detectionSpec[MainForm.CamNum].ThresholdLow[cmb_Indication.SelectedIndex] = num_ThresholdLow.Value;
         }
 
         private void num_ThresholdHigh_ValueChanged(object sender, double value)
         {
-            Parameters.detectionSpec[MainForm.CamNum].ThresholdHigh[cmb_Indication.SelectedIndex] = num_ThresholdHigh.Value;
+			if (Parameters.detectionSpec[MainForm.CamNum].ThresholdHigh[cmb_Indication.SelectedIndex] != num_ThresholdHigh.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "ThresholdHigh:" + Parameters.detectionSpec[MainForm.CamNum].ThresholdHigh[cmb_Indication.SelectedIndex] + "  第" + Convert.ToString(cmb_Indication.SelectedIndex) + "号缺陷" + "=>" + num_ThresholdHigh.Value);
+				Parameters.detectionSpec[MainForm.CamNum].ThresholdHigh[cmb_Indication.SelectedIndex] = num_ThresholdHigh.Value;
+			}
+			Parameters.detectionSpec[MainForm.CamNum].ThresholdHigh[cmb_Indication.SelectedIndex] = num_ThresholdHigh.Value;
         }
 
         private void num_AreaLow_ValueChanged(object sender, double value)
         {
-            Parameters.detectionSpec[MainForm.CamNum].AreaLow[cmb_Indication.SelectedIndex] = num_AreaLow.Value ;
+			if (Parameters.detectionSpec[MainForm.CamNum].AreaLow[cmb_Indication.SelectedIndex] != num_AreaLow.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "AreaLow:" + Parameters.detectionSpec[MainForm.CamNum].AreaLow[cmb_Indication.SelectedIndex] + "  第" + Convert.ToString(cmb_Indication.SelectedIndex) + "号缺陷" + "=>" + num_AreaLow.Value);
+				Parameters.detectionSpec[MainForm.CamNum].AreaLow[cmb_Indication.SelectedIndex] = num_AreaLow.Value;
+			}
+			Parameters.detectionSpec[MainForm.CamNum].AreaLow[cmb_Indication.SelectedIndex] = num_AreaLow.Value ;
         }
 
         private void num_AreaHigh_ValueChanged(object sender, double value)
         {
-            Parameters.detectionSpec[MainForm.CamNum].AreaHigh[cmb_Indication.SelectedIndex] = num_AreaHigh.Value;
+			if (Parameters.detectionSpec[MainForm.CamNum].AreaHigh[cmb_Indication.SelectedIndex] != num_AreaHigh.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "AreaHigh:" + Parameters.detectionSpec[MainForm.CamNum].AreaHigh[cmb_Indication.SelectedIndex] + "  第" + Convert.ToString(cmb_Indication.SelectedIndex) + "号缺陷" + "=>" + num_AreaHigh.Value);
+				Parameters.detectionSpec[MainForm.CamNum].AreaHigh[cmb_Indication.SelectedIndex] = num_AreaHigh.Value;
+			}
+			Parameters.detectionSpec[MainForm.CamNum].AreaHigh[cmb_Indication.SelectedIndex] = num_AreaHigh.Value;
         }
 
         private void btn_MeanImageTest_Click(object sender, EventArgs e)
@@ -570,12 +609,17 @@ namespace WY_App
 
         private void cmb_MeanImageList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Parameters.specifications.meanImageEnum = cmb_MeanImageList.SelectedIndex;
+			Parameters.specifications.meanImageEnum = cmb_MeanImageList.SelectedIndex;
         }
 
         private void chk_MeanImageEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            Parameters.specifications.MeanImageEnabled = chk_MeanImageEnabled.Checked;
+			if (Parameters.specifications.MeanImageEnabled != chk_MeanImageEnabled.Checked)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeanImageEnabled:" + Parameters.specifications.MeanImageEnabled + "=>" + chk_MeanImageEnabled.Checked);
+				Parameters.specifications.MeanImageEnabled = chk_MeanImageEnabled.Checked;
+			}
+			Parameters.specifications.MeanImageEnabled = chk_MeanImageEnabled.Checked;
         }
 
         private void btn_Minimizid_System_Click(object sender, EventArgs e)
@@ -600,7 +644,12 @@ namespace WY_App
 
         private void chk_SaveCropImage_CheckedChanged(object sender, EventArgs e)
         {
-            Parameters.specifications.SaveCropImage = chk_SaveCropImage.Checked;
+			if (Parameters.specifications.SaveCropImage != chk_SaveCropImage.Checked)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "SaveCropImage:" + Parameters.specifications.SaveCropImage + "=>" + chk_SaveCropImage.Checked);
+				Parameters.specifications.SaveCropImage = chk_SaveCropImage.Checked;
+			}
+			Parameters.specifications.SaveCropImage = chk_SaveCropImage.Checked;
         }
 
         private void txt_PixelResolutionColumn_TextChanged(object sender, EventArgs e)

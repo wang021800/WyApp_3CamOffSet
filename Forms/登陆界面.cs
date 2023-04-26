@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using WY_App.Utility;
 
 namespace WY_App
 {
@@ -97,15 +98,17 @@ namespace WY_App
 
         private void btn_Close_System_Click(object sender, EventArgs e)
         {
-            this.Close();
+			timer1.Enabled = false;
+			this.Close();
         }
 
         private void btn_login_Click(object sender, EventArgs e)
         {
            if( txt_Password.Text == userList[cmb_UserName.SelectedIndex].Password )
             {
-                TransfEvent(cmb_Permission.Text);  
-                this.Close();
+                TransfEvent(cmb_Permission.Text);
+				timer1.Enabled = false;
+				this.Close();
             }
             else
             {
@@ -197,7 +200,8 @@ namespace WY_App
                 label4.Visible = true;
                 txt_PasswordAck.Visible = true;
             }
-        }
+			timer1.Enabled = true;
+		}
 
 
 
@@ -295,5 +299,52 @@ namespace WY_App
             }        
         }
 
-    }
+		private void timer1_Tick(object sender, EventArgs e)
+		{
+			Jurisdiction();
+		}
+
+		private void Jurisdiction()
+		{
+			Int16 PlcSignal = HslCommunication._NetworkTcpDevice.ReadInt16(Parameters.plcParams.预留地址[3]).Content;
+			String sPlcSignal = HslCommunication._NetworkTcpDevice.ReadString(Parameters.plcParams.预留地址[4], 20).Content;
+
+			MainForm.UserName = sPlcSignal;
+			LogHelper.WriteWarn(" " + MainForm.UserName + "登录");
+			if (PlcSignal == 1)
+			{
+
+				cmb_UserName.Text = userList[1].Name;
+				cmb_Permission.Text = userList[1].Permission;
+				txt_Password.Text = userList[1].Password;
+				TransfEvent(cmb_Permission.Text);
+				this.Close();
+
+			}
+			else if (PlcSignal == 2)
+			{
+				cmb_UserName.Text = userList[0].Name;
+				cmb_Permission.Text = userList[0].Permission;
+				txt_Password.Text = userList[0].Password;
+				TransfEvent(cmb_Permission.Text);
+				this.Close();
+			}
+			else if (PlcSignal == 3)
+			{
+				cmb_UserName.Text = userList[2].Name;
+				cmb_Permission.Text = userList[2].Permission;
+				txt_Password.Text = userList[2].Password;
+				TransfEvent(cmb_Permission.Text);
+				this.Close();
+			}
+			else
+			{
+				cmb_UserName.Text = userList[3].Name;
+				cmb_Permission.Text = userList[3].Permission;
+				txt_Password.Text = userList[3].Password;
+				TransfEvent(cmb_Permission.Text);
+				this.Close();
+			}
+		}
+	}
 }

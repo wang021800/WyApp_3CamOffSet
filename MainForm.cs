@@ -57,8 +57,9 @@ namespace WY_App
         public static HObject[] hImage = new HObject[3];
         public static HTuple[] hv_AcqHandle = new HTuple[4];
         double[] defectionValues = new double[4];
+		public static string UserName = "人员修改";
 
-        private static Queue<Func<int>> m_List = new Queue<Func<int>>();
+		private static Queue<Func<int>> m_List = new Queue<Func<int>>();
         private static object m_obj = new object();
         private bool isExit = false;        
         public static HObject[] hObjectOut = new HObject[3];
@@ -175,7 +176,7 @@ namespace WY_App
             SoftAuthorize softAuthorize = new SoftAuthorize();
             if (!softAuthorize.CheckAuthorize(DiviceSn, AuthorizeEncrypted))
             {
-                MessageBox.Show("注册码和机器不匹配，请联系领先技术人员获取对应激活序列号！");
+                MessageBox.Show("注册码和机器不匹配，请联系能特技术人员获取对应激活序列号！");
                 Close();
                 return false;
             }
@@ -808,7 +809,27 @@ namespace WY_App
             HOperatorSet.SetPart(hWindows2[1], 0, 0, -1, -1);//设置窗体的规格
             HOperatorSet.SetPart(hWindows2[2], 0, 0, -1, -1);//设置窗体的规格
             HOperatorSet.DispObj(hImage[2], hWindows2[0]);
-            LogHelper.WriteInfo(System.DateTime.Now.ToString() + "初始化完成");
+
+			Halcon.CamConnect[0] = Halcon.initalCamera("LineCam0", ref Halcon.hv_AcqHandle[0]);
+			if (Halcon.CamConnect[0])
+			{
+				Halcon.SetFramegrabberParam(0, Halcon.hv_AcqHandle[0]);
+
+
+			}
+			Halcon.CamConnect[1] = Halcon.initalCamera("LineCam1", ref Halcon.hv_AcqHandle[1]);
+			if (Halcon.CamConnect[1])
+			{
+				Halcon.SetFramegrabberParam(1, Halcon.hv_AcqHandle[1]);
+
+			}
+			Halcon.CamConnect[2] = Halcon.initalCamera("LineCam2", ref Halcon.hv_AcqHandle[2]);
+			if (Halcon.CamConnect[2])
+			{
+				Halcon.SetFramegrabberParam(2, Halcon.hv_AcqHandle[2]);
+			}
+
+			LogHelper.WriteInfo(System.DateTime.Now.ToString() + "初始化完成");
         }
 
         #region 点击panel控件移动窗口
@@ -868,8 +889,10 @@ namespace WY_App
 
             if (Halcon.CamConnect[0] && Halcon.CamConnect[1] && Halcon.CamConnect[2])
             {
-
-            }
+				HOperatorSet.GrabImageStart(Halcon.hv_AcqHandle[0], -1);
+				HOperatorSet.GrabImageStart(Halcon.hv_AcqHandle[1], -1);
+				HOperatorSet.GrabImageStart(Halcon.hv_AcqHandle[2], -1);
+			}
             else
             {
                 MessageBox.Show("相机链接异常，请检查!");
@@ -920,7 +943,23 @@ namespace WY_App
             {
                 MessageBox.Show("链接异常，请检查!");
             }
-            for (int i = 0; i < 3; i++)
+
+			if (Halcon.CamConnect[0] && Halcon.CamConnect[1] && Halcon.CamConnect[2])
+			{
+				Halcon.CamConnect[0] = Halcon.CloseFramegrabber(Halcon.hv_AcqHandle[0]);
+				Halcon.CamConnect[1] = Halcon.CloseFramegrabber(Halcon.hv_AcqHandle[1]);
+				Halcon.CamConnect[2] = Halcon.CloseFramegrabber(Halcon.hv_AcqHandle[2]);
+				Halcon.CamConnect[0] = Halcon.initalCamera("LineCam0", ref Halcon.hv_AcqHandle[0]);
+				Halcon.CamConnect[1] = Halcon.initalCamera("LineCam1", ref Halcon.hv_AcqHandle[1]);
+				Halcon.CamConnect[2] = Halcon.initalCamera("LineCam2", ref Halcon.hv_AcqHandle[2]);
+			}
+			else
+			{
+				MessageBox.Show("相机链接异常，请检查!");
+				return;
+			}
+
+			for (int i = 0; i < 3; i++)
             {
                 if (MainThread[ i] != null)
                 {

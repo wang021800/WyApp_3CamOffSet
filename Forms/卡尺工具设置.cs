@@ -34,7 +34,37 @@ namespace WY_App
 
         private void 保存_Click(object sender, EventArgs e)
         {
-            Parameters.detectionSpec[MainForm.CamNum].MeasureLength1[MainForm.baseNum] = (uint)num_MeasureLength1.Value;
+			if (Parameters.detectionSpec[MainForm.CamNum].MeasureLength1[MainForm.baseNum] != (uint)num_MeasureLength1.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeasureLength1:" + Parameters.detectionSpec[MainForm.CamNum].MeasureLength1[MainForm.baseNum] + "=>" + (uint)num_MeasureLength1.Value);
+				Parameters.detectionSpec[MainForm.CamNum].MeasureLength1[MainForm.baseNum] = (uint)num_MeasureLength1.Value;
+			}
+
+			if (Parameters.detectionSpec[MainForm.CamNum].MeasureLength2[MainForm.baseNum] != (uint)num_MeasureLength2.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeasureLength2:" + Parameters.detectionSpec[MainForm.CamNum].MeasureLength2[MainForm.baseNum] + "=>" + (uint)num_MeasureLength2.Value);
+				Parameters.detectionSpec[MainForm.CamNum].MeasureLength2[MainForm.baseNum] = (uint)num_MeasureLength2.Value;
+			}
+
+			if (Parameters.detectionSpec[MainForm.CamNum].MeasureSigma[MainForm.baseNum] != (double)num_MeasureSigma.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeasureSigma:" + Parameters.detectionSpec[MainForm.CamNum].MeasureSigma[MainForm.baseNum] + "=>" + (double)num_MeasureSigma.Value);
+				Parameters.detectionSpec[MainForm.CamNum].MeasureSigma[MainForm.baseNum] = (double)num_MeasureSigma.Value;
+			}
+
+			if (Parameters.detectionSpec[MainForm.CamNum].MeasureThreshold[MainForm.baseNum] != (uint)num_MeasureThreshold.Value)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeasureSigma:" + Parameters.detectionSpec[MainForm.CamNum].MeasureThreshold[MainForm.baseNum] + "=>" + (uint)num_MeasureThreshold.Value);
+				Parameters.detectionSpec[MainForm.CamNum].MeasureThreshold[MainForm.baseNum] = (uint)num_MeasureThreshold.Value;
+			}
+
+			if (Parameters.detectionSpec[MainForm.CamNum].MeasureTransition[MainForm.baseNum] != num_MeasureTransition.SelectedText)
+			{
+				LogHelper.WriteWarn(" " + MainForm.UserName + "MeasureSigma:" + Parameters.detectionSpec[MainForm.CamNum].MeasureTransition[MainForm.baseNum] + "=>" + num_MeasureTransition.SelectedText);
+				Parameters.detectionSpec[MainForm.CamNum].MeasureTransition[MainForm.baseNum] = num_MeasureTransition.SelectedText;
+			}
+
+			Parameters.detectionSpec[MainForm.CamNum].MeasureLength1[MainForm.baseNum] = (uint)num_MeasureLength1.Value;
             Parameters.detectionSpec[MainForm.CamNum].MeasureLength2[MainForm.baseNum] = (uint)num_MeasureLength2.Value;
             Parameters.detectionSpec[MainForm.CamNum].MeasureSigma[MainForm.baseNum] = (double) num_MeasureSigma.Value;
             Parameters.detectionSpec[MainForm.CamNum].MeasureThreshold[MainForm.baseNum] = (uint)num_MeasureThreshold.Value;
